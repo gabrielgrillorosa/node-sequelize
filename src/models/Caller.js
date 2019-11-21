@@ -5,25 +5,49 @@ const moment = require('moment')
 class Caller extends Model {
     static init(sequelize){
         super.init({
-            createdAt: {
-                type: DataTypes.DATE,
-                allowNull: true,
-                defaultValue: moment("2016-25") 
-                
-            },
-            status: DataTypes.INTEGER,
+            
             uid: { 
                 type: DataTypes.STRING,
                 primaryKey: true,
                 autoIncrement: false,
-                allowNull: false,
-                unique: true
+                allowNull: false
+              
             },
+            status: {
+                type: DataTypes.STRING,
+                 allowNull: false,
+            },     
+         
             chan: DataTypes.STRING,
             position: DataTypes.INTEGER,
             member_id: DataTypes.INTEGER,
             queue_id: DataTypes.INTEGER,
-            }, {sequelize}      
+            
+            }, {
+                 timestamps: true,
+                 // I don't want createdAt
+                createdAt: 'created_at',
+                updatedAt: 'updated_at',
+
+                 // don't delete database entries but set the newly added attribute deletedAt
+                 // to the current date (when deletion was done). paranoid will only work if
+                 // timestamps are enabled
+                 //paranoid: true,
+               
+                 // don't use camelcase for automatically added attributes but underscore style
+                 // so updatedAt will be updated_at
+                 underscored: true,
+               
+                 // disable the modification of table names; By default, sequelize will automatically
+                 // transform all passed model names (first parameter of define) into plural.
+                 // if you don't want that, set the following
+                 freezeTableName: true,
+               
+                 // define the table's name
+                 tableName: 'callers',
+                 sequelize,
+
+            }      
     )
        
     }
@@ -34,4 +58,5 @@ class Caller extends Model {
     }
 
 }
+
 module.exports = Caller;

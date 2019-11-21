@@ -9,6 +9,9 @@ const Statistics = require('../models/Statistics')
 
 const connection = new Sequelize(dbconfig)
 
+
+
+
 Caller.init(connection)
 Member.init(connection)
 Queue.init(connection)
@@ -18,6 +21,12 @@ Caller.associate(connection.models)
 Member.associate(connection.models)
 Queue.associate(connection.models)
 Statistics.associate(connection.models)
+
+Caller.sync()
+Member.sync()
+Queue.sync()
+Statistics.sync({force:true});
+
 
 
 

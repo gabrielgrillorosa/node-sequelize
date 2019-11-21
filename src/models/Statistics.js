@@ -5,18 +5,7 @@ const Queue = require ('./Queue')
 class Statistics extends Model {
     static init(sequelize){
         super.init({
-            created_at: {
-                type: DataTypes.DATE,
-                allowNull: false,
-                get() {
-                  return moment(this.getDataValue('created_at'))
-                    .utcOffset(this.getDataValue('offset'));
-                },
-                set(){
-
-
-                }
-            },            
+            
             completed: DataTypes.INTEGER,
             abandoned: DataTypes.INTEGER,
             talktime: DataTypes.INTEGER,
@@ -24,9 +13,43 @@ class Statistics extends Model {
             SL: DataTypes.INTEGER,
             SLPerf:  DataTypes.DECIMAL,
             queue_id: DataTypes.INTEGER,
+            created_at: {
+                type: DataTypes.DATEONLY,
+                allowNull: false,
+                get() {
+                  return moment(this.getDataValue('created_at'))
+                   
+                },
+                set(){
+
+
+                }
+            },            
      
 
-            }, {sequelize        
+            }, {
+  
+                timestamps: true,
+                // I don't want createdAt
+               createdAt: false,
+               updatedAt: 'updated_at',
+
+                // don't delete database entries but set the newly added attribute deletedAt
+                // to the current date (when deletion was done). paranoid will only work if
+                // timestamps are enabled
+                //paranoid: true,
+              
+                // don't use camelcase for automatically added attributes but underscore style
+                // so updatedAt will be updated_at
+                underscored: false,
+              
+                // disable the modification of table names; By default, sequelize will automatically
+                // transform all passed model names (first parameter of define) into plural.
+                // if you don't want that, set the following
+                freezeTableName: true,
+                sequelize ,
+
+
             }
         
         )

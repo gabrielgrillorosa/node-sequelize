@@ -15,9 +15,9 @@ class Queue extends Model {
        
     }
     static associate(models) {
-        this.belongsToMany( models.Member, { foreignKey: 'queue_id', through: 'member_queues',  as: 'members' } )
+        this.belongsToMany( models.Member, { foreignKey: 'queue_id', through: 'MemberQueues',  as: 'Members' } )
         this.hasMany(models.Caller,{ foreignKey: 'queue_id',  as: 'callers' })
-        this.belongsTo(models.Statistics, { foreignKey: 'queue_id', as: ' statistics' })
+        this.hasMany(models.Statistics, { foreignKey: 'queue_id', as: ' statistics' })
     }
 }
 module.exports = Queue;
