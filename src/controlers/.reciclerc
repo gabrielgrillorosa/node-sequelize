@@ -1,0 +1,7 @@
+ let date = new Date();
+            let current_day = date.getDay()
+            let statistics = Statistics.findOrCreate({
+                where: {created_at },
+                 defaults:  { completed,  abandoned, holdtimet, SL,  SLPerf }
+            })
+           

@@ -18,32 +18,31 @@ module.exports = {
     },
 
     async addQueue (req, res){
-        const { sid, name,  weight, max } = req.body.queues;
-        const { completed,  abandoned, holdtimet, SL,  SLPerf } = req.body.queues;
-        const [ queue, created] = await Queue.findOne({
+        const { sid, name,  weight, max } = req.body.queue;
+        const { completed,  abandoned, holdtimet, SL,  SLPerf } = req.body.queue;
+        const [ queue, created] = await Queue.findOrCreate({
             where: {name},
             defaults: { sid, name,  weight, max }
-        })
+        }).catch( error => {
+            console.log(JSON.stringify(error))
+            return  res.json(error)
 
-        if(queue){
-            let date = new Date();
-            let current_day = date.getDay()
-            let statistics = Statistics.findOrCreate({
-                where: {created_at },
-                 defaults:  { completed,  abandoned, holdtimet, SL,  SLPerf }
+        } ).then( async queue => {
+            const statistics =  await  Statistics.findOrCreate({
+                where: {created_at: date.getDay()},
+                defaults:  { completed,  abandoned, holdtimet, SL,  SLPerf }
+            }).catch( error => {
+                console.log(JSON.stringify(error))
+
+            }).then( statistics => {
+                statistics.setQueue(queue)
+
+            }).finally({
             })
-           
-       }
-       const statistics  = await Queue.findOne({
-           include: { association: 'members', attributes: ['name', 'callsTaken'], through: { attributes : [] } },
-           where: { name: queue_name }           
-        });
-        if(!queue){
-           return res.status(400).json({error: "Queue do not exists!"});
-       }
-        
-       await member.addQueue(queue);
-       return res.json({queue});
+        })        
+        .finally({
+        })           
+      
    },
 
     async listQueues(req, res){
@@ -53,7 +52,7 @@ module.exports = {
     },
     
     async addCaller (req, res){
-        console.log('socorro')
+       
         const { queue_name, ui } = req.bod.caller;
         const queue = await Queue.findOne({
                 where: { name: queue_name } 
@@ -85,7 +84,7 @@ module.exports = {
             return res.status(400).json({error: "Queue do not exists!"});
         }
          
-        await member.addQueue(queue);
+        ember.addQueue(queue);
         return res.json({queue});
     },
 
