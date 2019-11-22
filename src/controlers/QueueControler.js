@@ -1,7 +1,10 @@
+
 const Queue = require('../models/Queue');
 const Member = require('../models/Member');
 const Caller = require('../models/Caller');
-const Statistics = require('../models/Statistics')
+const Statistic = require('../models/Statistc')
+const  Moment = require('moment')
+
 module.exports = {
 
     async listMembers(req, res){
@@ -18,32 +21,93 @@ module.exports = {
     },
 
     async addQueue (req, res){
-        const { sid, name,  weight, max } = req.body.queue;
-        const { completed,  abandoned, holdtimet, SL,  SLPerf } = req.body.queue;
-        const [ queue, created] = await Queue.findOrCreate({
+       
+        const { sid, name,  weight, max } = req.body;
+        const { completed,  abandoned, talktime, holdtime, SL,  SLPerf } = req.body;
+        const  createdAt  = new Moment().format('YYYY-MM-DD')
+       
+        const [ queue, created ] = await Queue.findOrCreate({
             where: {name},
-            defaults: { sid, name,  weight, max }
+            defaults:  { sid, name,  weight, max } 
         }).catch( error => {
             console.log(JSON.stringify(error))
-            return  res.json(error)
+            return res.json(error)
+        })
+    
+       if(created) {
+           Statistic.create( { completed,  abandoned, talktime, holdtime, SL,  SLPerf, createdAt } )
+           .catch(  error => {
+               console.log(error) 
+               return res.json(error)
+            }).then( statistic => {
+                statistic.setQueue(queue).then( statistic => {
+                    return res.json({queue, statistic})
+                }).finally(
+                        console.log('Set to queue statistic!')
+                )
+                
+            }).finally(
+                console.log("Craindo Statistic!")
+            )
+            
+            
+         }else
+         {
+            queue.set('weight',weight )
+            queue.set('max', max)
 
-        } ).then( async queue => {
-            const statistics =  await  Statistics.findOrCreate({
-                where: {created_at: date.getDay()},
-                defaults:  { completed,  abandoned, holdtimet, SL,  SLPerf }
-            }).catch( error => {
-                console.log(JSON.stringify(error))
+            queue.save({
+                 options: {
+                    fields: [ weight, max]
+                 }
+            
+             }).catch( error => {
+                 console.log(error)
+                 return res.json(error)
+             })
+             
+             const statistic = await Statistic.findOne({
+                where:{created_at:createdAt, queue_id:queue.get('id')}
+             }).catch( error => {
+                 console.log(error)
+                 return res.json(error)
+             })
 
-            }).then( statistics => {
-                statistics.setQueue(queue)
+             if(statistic)
+             {
+                statistic.set({completed,  abandoned, talktime, holdtime, SL,  SLPerf})
+                statistic.save({
+                    options: {
+                        fields: [ completed,  abandoned, talktime, holdtime, SL,  SLPerf]
+                    }
+                 }).catch( error => {
+                     console.log(error)
+                     return res.json(error)
+                 })
+                 return res.json({queue, statistic})
 
-            }).finally({
-            })
-        })        
-        .finally({
-        })           
-      
-   },
+             }else{
+                 
+                Statistic.create( { completed,  abandoned, talktime, holdtime, SL,  SLPerf, createdAt } )
+                .catch(  error => {
+                    console.log(error) 
+                    return res.json(error)
+                    }).then( statistic => {
+                        statistic.setQueue(queue)
+                        .then( statistic => {
+                            return res.json({queue, statistic})
+                        }).finally(
+                                console.log('Set queue to statistic!')
+                        ).catch(error => {
+                            console.log(error)
+                        })
+                        
+                    }).finally(
+                        console.log("Craindo Statistic!")
+                    )
+             }
+         }
+    },
 
     async listQueues(req, res){
      
@@ -84,7 +148,7 @@ module.exports = {
             return res.status(400).json({error: "Queue do not exists!"});
         }
          
-        ember.addQueue(queue);
+        member.addQueue(queue);
         return res.json({queue});
     },
 

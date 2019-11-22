@@ -35,7 +35,7 @@ routes.get('/report', ReportControler.show);
 routes.post('/queues/addCaller',  QueueControler.addCaller);
 
 //routes.post('/queues',QueueControler.store);
-routes.get('/queues', QueueControler.listQueues);
+routes.post('/queues/addQueue', QueueControler.addQueue);
 routes.post('/queues/addMember',  QueueControler.addMember);
 routes.get('/queues',  QueueControler.listQueues);
 routes.delete('/queues/removeMember',  QueueControler.removeMember);

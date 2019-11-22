@@ -12,9 +12,9 @@ class Member extends Model {
         )
        
     }
-    static associate(models) {
+        static associate(models) {
         this.hasMany( models.Caller, { foreignKey: 'member_id', as: 'callers' } )
-        this.belongsToMany( models.Queue, { foreignKey: 'member_id', through: 'MemberQueues',  as: 'Queues' } )
+        //this.belongsToMany( models.Queue, { foreignKey: 'member_id', through: 'MemberQueues',  as: 'Queues' } )
     }
 }
 module.exports = Member;

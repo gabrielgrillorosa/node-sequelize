@@ -1,6 +1,6 @@
 const { Model, DataTypes } = require('sequelize')
 const Caller = require('./Caller')
-const  Statistics = require('./Statistics')
+const  Statistic = require('./Statistc')
 
 class Queue extends Model {
     static init(sequelize){
@@ -15,9 +15,9 @@ class Queue extends Model {
        
     }
     static associate(models) {
-        this.belongsToMany( models.Member, { foreignKey: 'queue_id', through: 'MemberQueues',  as: 'Members' } )
+        // this.belongsToMany( models.Member, { foreignKey: 'queue_id', through: 'MemberQueues',  as: 'Members' } )
         this.hasMany(models.Caller,{ foreignKey: 'queue_id',  as: 'callers' })
-        this.hasMany(models.Statistics, { foreignKey: 'queue_id', as: ' statistics' })
+        this.hasMany(models.Statistic, { foreignKey: 'queue_id', as: 'Statistic'})
     }
 }
 module.exports = Queue;

@@ -2,7 +2,7 @@ const { Model, DataTypes } = require('sequelize')
 const moment = require('moment')
 const Queue = require ('./Queue')
 
-class Statistics extends Model {
+class Statistic extends Model {
     static init(sequelize){
         super.init({
             
@@ -16,18 +16,11 @@ class Statistics extends Model {
             created_at: {
                 type: DataTypes.DATEONLY,
                 allowNull: false,
-                get() {
-                  return moment(this.getDataValue('created_at'))
-                   
-                },
-                set(){
-
-
-                }
+                defaultValue: new Date()
             },            
      
 
-            }, {
+         }, {
   
                 timestamps: true,
                 // I don't want createdAt
@@ -46,7 +39,7 @@ class Statistics extends Model {
                 // disable the modification of table names; By default, sequelize will automatically
                 // transform all passed model names (first parameter of define) into plural.
                 // if you don't want that, set the following
-                freezeTableName: true,
+               // freezeTableName: true,
                 sequelize ,
 
 
@@ -62,4 +55,4 @@ class Statistics extends Model {
     }
 
 }
-module.exports = Statistics
+module.exports = Statistic
