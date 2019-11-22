@@ -18,6 +18,7 @@ var corsOptions = {
   */
   
 //caller routes
+routes.post('/callers/all',  CallerControler.all);
 routes.post('/callers/addCaller',  CallerControler.addCaller);
 routes.post('/callers/setQueue',  CallerControler.setQueue);
 routes.post('/callers/setMember', CallerControler.setMember);

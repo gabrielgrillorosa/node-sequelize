@@ -22,9 +22,9 @@ module.exports = {
 
     async addQueue (req, res){
        
-        const { sid, name,  weight, max } = req.body;
-        const { completed,  abandoned, talktime, holdtime, SL,  SLPerf } = req.body;
-        const  createdAt  = new Moment().format('YYYY-MM-DD')
+        const { sid, name,  weight, max } = req.body.queue;
+        const { completed,  abandoned, talktime, holdtime, SL,  SLPerf } = req.body.queue;
+        const  created_day = new Moment().format('YYYY-MM-DD')
        
         const [ queue, created ] = await Queue.findOrCreate({
             where: {name},
@@ -35,7 +35,7 @@ module.exports = {
         })
     
        if(created) {
-           Statistic.create( { completed,  abandoned, talktime, holdtime, SL,  SLPerf, createdAt } )
+           Statistic.create( { completed,  abandoned, talktime, holdtime, SL,  SLPerf, created_day } )
            .catch(  error => {
                console.log(error) 
                return res.json(error)
@@ -67,7 +67,7 @@ module.exports = {
              })
              
              const statistic = await Statistic.findOne({
-                where:{created_at:createdAt, queue_id:queue.get('id')}
+                where:{created_day:created_day, queue_id:queue.get('id')}
              }).catch( error => {
                  console.log(error)
                  return res.json(error)
@@ -88,7 +88,7 @@ module.exports = {
 
              }else{
                  
-                Statistic.create( { completed,  abandoned, talktime, holdtime, SL,  SLPerf, createdAt } )
+                Statistic.create( { completed,  abandoned, talktime, holdtime, SL,  SLPerf, created_day } )
                 .catch(  error => {
                     console.log(error) 
                     return res.json(error)

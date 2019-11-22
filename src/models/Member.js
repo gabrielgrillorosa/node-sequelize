@@ -1,6 +1,7 @@
 const Queue = require('./Queue')
 const { Model, DataTypes } = require('sequelize')
 const Caller = require('./Caller')
+const MemberQueue = require('./MemberQueue')
 
 class Member extends Model {
     static init(sequelize){
@@ -12,9 +13,22 @@ class Member extends Model {
         )
        
     }
-        static associate(models) {
-        this.hasMany( models.Caller, { foreignKey: 'member_id', as: 'callers' } )
-        //this.belongsToMany( models.Queue, { foreignKey: 'member_id', through: 'MemberQueues',  as: 'Queues' } )
+
+    static associate(models) {
+
+       
+         this.hasMany( models.Caller, { foreignKey: 'member_id', as: 'callers' } )
+         this.belongsToMany( models.Queue,
+            {
+                foreignKey: 'member_id',
+                through: MemberQueue,
+                as: 'Queues' ,       
+                model: MemberQueue,     
+                onDelete: 'SET NULL',
+                onUpdate: 'CASCADE',
+                constraints: true
+        
+        } )
     }
 }
 module.exports = Member;

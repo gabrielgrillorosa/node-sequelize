@@ -4,7 +4,12 @@ const Queue = require('../models/Queue')
 const { Op } = require ('sequelize')
 
 module.exports = {
+    async all (req, res){
+    console.log(JSON.stringify(req.body.caller))
+    },
+
     async list (_req, res){
+        
         const callers = await Caller.findAll({
             include: [ { association: 'member', attributes: ['name'] } ,
             {   association: 'queue', attributes: ['name', 'sid'] } 
@@ -101,7 +106,7 @@ module.exports = {
         }).then(function(caller) { 
             
                queue.addCallers(caller)
-               return res.status(500).json(caller)
+               return res.status(400).json(caller)
          })        
         .finally(function()
         {
