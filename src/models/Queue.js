@@ -13,20 +13,12 @@ class Queue extends Model {
             sid: DataTypes.INTEGER,
             name: DataTypes.STRING,
             weight: DataTypes.INTEGER,
-            max: DataTypes.INTEGER,
-                        
+            max: DataTypes.INTEGER,                        
          },
-          {sequelize
-        
-        
-        }
-        
-        )
-       
+          {sequelize            
+        })     
     }
     static associate(models) {
-        
-        
         this.hasMany(models.Caller,{ foreignKey: 'queue_id',  as: 'callers' })
         this.hasMany(models.Statistic, { foreignKey: 'queue_id', as: 'statistics'})
         this.belongsToMany( models.Member,
@@ -37,8 +29,7 @@ class Queue extends Model {
                 onDelete: 'SET NULL',
                 model: MemberQueue,
                 onUpdate: 'CASCADE',
-                constraints: true
-        
+                constraints: true        
            } )
     }
 }

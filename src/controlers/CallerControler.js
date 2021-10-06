@@ -8,17 +8,31 @@ module.exports = {
     console.log(JSON.stringify(req.body.caller))
     },
 
-    async list (_req, res){
-        
-        const callers = await Caller.findAll({
+    async list (req, res){
+        const { page, limit } = req.params
+        const callers = await Caller.findAndCountAll({
+            limit: limit,
+            offset: (page - 1)*limit, 
             include: [ { association: 'member', attributes: ['name'] } ,
             {   association: 'queue', attributes: ['name', 'sid'] } 
         ]       
     });
        
         return res.json(callers)
-
     },
+
+    async numCallers (req, res){
+        const  { uid } = req.params;
+        const caller = await Caller.count({
+            attributes: ['uid', 'status','position'],
+            where : {uid},
+            include: [ { association: 'member', attributes: ['name'] } ,
+            { association: 'queue', attributes: ['name'] } 
+            ]       
+        });
+        return res.json(caller)
+    },
+
     async getCaller (req, res, _next){
         const  { uid } = req.params;
         const caller = await Caller.findOne({
@@ -29,12 +43,11 @@ module.exports = {
             ]       
         });
         return res.json(caller)
-
     },
 
 
     async setMember (req, res){
-        const { uid, name  } = req.body.params;
+        const { uid, name  } = req.body.member;
         const member = await Member.findOne({
             where: {name}
         })

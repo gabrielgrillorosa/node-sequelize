@@ -2,7 +2,7 @@ module.exports = {
     username: 'postgres',
     password: '030201',
     database: 'callcenter',
-    host: '127.0.0.1',
+    host: 'localhost',
     dialect: 'postgres',
     dialectOptions: {
         useUTC: true, //for reading from database

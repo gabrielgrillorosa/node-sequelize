@@ -1,33 +1,25 @@
 const { Model, DataTypes } = require('sequelize')
-const Queue = require ('./Queue')
-const moment = require('moment')
+const Caller = require ('./Caller')
+const Member = require ('./Member')
 
-class Caller extends Model {
+class Attemp extends Model {
     static init(sequelize){
         super.init({
-            
-            uid: { 
-                type: DataTypes.STRING,
+            id: { 
+                type: DataTypes.BIGINT,
                 primaryKey: true,
-                autoIncrement: false,
-                allowNull: false
-              
+                autoIncrement: true,
+                allowNull: false              
             },
-            status: {
-                type: DataTypes.STRING,
-                 allowNull: false,
-            },     
-         
-            chan: DataTypes.STRING,
-            position: DataTypes.INTEGER,
+            status: DataTypes.STRING,
+            caller_uid: DataTypes.STRING,
             member_id: DataTypes.INTEGER,
-            queue_id: DataTypes.INTEGER,
             
             }, {
                  timestamps: true,
                  // I don't want createdAt
                 createdAt: 'created_at',
-                updatedAt: 'updated_at',
+                updatedAt: false,
 
                  // don't delete database entries but set the newly added attribute deletedAt
                  // to the current date (when deletion was done). paranoid will only work if
@@ -44,7 +36,7 @@ class Caller extends Model {
                  freezeTableName: true,
                
                  // define the table's name
-                 tableName: 'callers',
+                 tableName: 'attemps',
                  sequelize,
 
             }      
@@ -53,11 +45,9 @@ class Caller extends Model {
     }
     static associate(models) {
         this.belongsTo(models.Member, { foreignKey: 'member_id', as: 'member'})
-        this.belongsTo(models.Queue, { foreignKey: 'queue_id', as: 'queue'})
-        this.hasMany(models.Attemp,{ foreignKey: 'caller_uid',  as: 'attemps'})
-        
+        this.belongsTo(models.Caller, { foreignKey: 'caller_uid', as: 'caller'}) 
     }
 
 }
 
-module.exports = Caller;
+module.exports = Attemp;

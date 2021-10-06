@@ -1,2 +1,31 @@
 {
+    "javascript.updateImportsOnFileMove.enabled": "always",
+    "window.zoomLevel": 0,
+    "files.autoSave": "afterDelay",
+    "jshint.trace.server": "verbose",
+
+    "jshint.options":{
+        "esversion":8,
+        "asi": true
+    },
+
+    "eslint.options": {
+        "env":{
+            "es6":true
+        },
+        "parserOptions": {
+            "ecmaVersion": 8 // or 7,8,9
+        }
+    },
+    
+    "[javascript]": {
+        
+    },
+    "javascript.format.semicolons": "insert",
+    "typescript.format.semicolons": "insert",
+    "jshint.lintHTML": true,
+    "git.enableSmartCommit": true,
+    "explorer.confirmDelete": false,
+    "workbench.colorTheme": "Kimbie Dark",
+    "eslint.alwaysShowStatus": true
 }

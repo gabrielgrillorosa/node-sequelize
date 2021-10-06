@@ -7,8 +7,7 @@ class MemberQueue extends Model {
            
        },
         {
-            sequelize,
-          
+            sequelize,      
         
         }
         
